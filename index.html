@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>剧情对话编辑器</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="lib/codemirror.css">
+<link rel="stylesheet" href="theme/material-darker.css">
+</head>
+<body>
+
+<div class="app">
+
+  <!-- 左侧编辑器 -->
+  <div class="editor-side">
+    <div class="tabs-bar" id="tabsBar"></div>
+
+    <div class="char-bar" id="charBar">
+      <span class="bar-label">角色：</span>
+    </div>
+
+    <div class="editor-toolbar">
+      <button id="undoBtn" title="撤销 (Ctrl+Z)">↶ 撤销</button>
+      <button id="redoBtn" title="重做 (Ctrl+Y)">↷ 重做</button>
+      <input type="text" id="titleInput" class="title-input" placeholder="剧本标题…" maxlength="40">
+      <span id="editorInfo"></span>
+      <span class="spacer"></span>
+      <button id="exportBtn" class="accent-btn">⬇ 导出</button>
+      <button id="insertCharBtn">+ 插入角色</button>
+      <button id="insertNarrationBtn">+ 插入旁白</button>
+      <button id="resetFileBtn">清空本页</button>
+    </div>
+
+    <div id="editorWrap" class="editor-wrap"></div>
+  </div>
+
+  <!-- 右侧预览 -->
+  <div class="preview-side">
+    <div class="preview-toolbar">
+      <button id="prevBtn">◀ 上一句</button>
+      <button id="nextBtn">下一句 ▶</button>
+      <button id="restartBtn">↻ 重头</button>
+      <span class="spacer"></span>
+      <span class="progress" id="progress"></span>
+    </div>
+
+    <div class="stage" id="stage">
+      <div class="dialog" id="dialog">
+        <div class="speaker" id="speaker"></div>
+        <div class="text" id="text"></div>
+      </div>
+      <div class="hint" id="hint">点击画面继续 ▸</div>
+    </div>
+
+    <button class="history-btn" id="historyBtn" title="查看历史">📜</button>
+
+    <div class="history-panel" id="historyPanel">
+      <div class="history-header">
+        <h2>📜 历史对话</h2>
+        <button id="closeHistory">×</button>
+      </div>
+      <div class="history-list" id="historyList"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- 角色编辑弹窗 -->
+<div class="modal-mask" id="charModal">
+  <div class="modal">
+    <h3 id="modalTitle">添加角色</h3>
+
+    <label>角色名</label>
+    <input type="text" id="charNameInput" placeholder="例如：小明" maxlength="12">
+
+    <label>选择颜色</label>
+    <div class="color-grid" id="colorGrid"></div>
+
+    <div class="custom-color-row">
+      <input type="color" id="customColor" value="#ffd479">
+      <input type="text" id="customColorText" placeholder="或输入颜色名/代码" value="#ffd479">
+    </div>
+
+    <div class="rgb-sliders">
+      <div class="rgb-row">
+        <span class="rgb-label" style="color:#ff6b6b">R</span>
+        <input type="range" id="rgbR" min="0" max="255" value="255">
+        <span class="rgb-val" id="rgbRVal">255</span>
+      </div>
+      <div class="rgb-row">
+        <span class="rgb-label" style="color:#6bcf7f">G</span>
+        <input type="range" id="rgbG" min="0" max="255" value="212">
+        <span class="rgb-val" id="rgbGVal">212</span>
+      </div>
+      <div class="rgb-row">
+        <span class="rgb-label" style="color:#6ba3ff">B</span>
+        <input type="range" id="rgbB" min="0" max="255" value="121">
+        <span class="rgb-val" id="rgbBVal">121</span>
+      </div>
+    </div>
+
+    <div class="preview-chip" id="previewChip">
+      <span class="pname" id="previewName">角色</span>
+      <span class="ptext">示例对话内容</span>
+    </div>
+
+    <div class="modal-actions">
+      <button class="cancel" id="modalCancel">取消</button>
+      <button class="ok" id="modalOk">确定</button>
+    </div>
+  </div>
+</div>
+
+<!-- 导出设置弹窗 -->
+<div class="modal-mask" id="exportModal">
+  <div class="modal">
+    <h3>导出为独立剧情网页</h3>
+
+    <label>剧名</label>
+    <input type="text" id="exportTitle" placeholder="例如：雨夜的告白" maxlength="40">
+
+    <label>作者（可留空）</label>
+    <input type="text" id="exportAuthor" placeholder="你的名字" maxlength="20">
+
+    <label>选项</label>
+    <div class="export-options">
+      <label class="opt-row">
+        <input type="checkbox" id="optTypewriter" checked>
+        <span>打字机效果（文字逐字显示）</span>
+      </label>
+      <label class="opt-row">
+        <input type="checkbox" id="optRestart" checked>
+        <span>显示「重新开始」按钮</span>
+      </label>
+      <label class="opt-row">
+        <input type="checkbox" id="optHistory" checked>
+        <span>显示「历史回顾」按钮</span>
+      </label>
+    </div>
+
+    <div class="modal-actions">
+      <button class="cancel" id="exportCancel">取消</button>
+      <button class="ok" id="exportOk">导出 HTML</button>
+    </div>
+  </div>
+</div>
+
+<script src="lib/codemirror.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
